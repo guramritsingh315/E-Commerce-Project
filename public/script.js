@@ -12,6 +12,7 @@ function Cust_validateAndSend(){
     var pwd2=document.getElementById('pwd2').value;
     var phn_err=document.getElementById('phone_err');
     var pass_err = document.getElementById('pass_err');
+   
     if(Cust_phone_number.length > 10){
         //alert("Number could not be greater than 10 digits");
         phn_err.innerHTML = "*Number could not be greater than 10 digits";

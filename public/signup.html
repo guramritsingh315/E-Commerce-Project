@@ -51,7 +51,7 @@
                         <div class="form-group">
                             <label class="control-label col-sm-2">Phone Number:</label>
                             <div class="col-sm-6">
-                                <input type="tel" class="form-control" id="Cust_phone_number"  placeholder="Enter phone-number" required/>
+                                <input type="tel" class="form-control" id="Cust_phone_number"  placeholder="Enter phone-number" maxlength="10" required/>
                             </div>
                             <div id="phone_err" class="err"></div>
                         </div>
@@ -76,7 +76,7 @@
                         <div class="err" id="pass_err"></div>
                         <div class="form-group">
                             <div class="text-center">
-                            <input type="button" class="btn btn-primary" style="width:200px;" onclick="return Cust_validateAndSend()" value="Sign-Up" />
+                           <input type="submit" class="btn btn-primary" style="width:200px;" onclick="return Cust_validateAndSend()" value="Sign-Up" />
                           </div>
                         </div>
                     </form>
@@ -106,7 +106,7 @@
                         <div class="form-group">
                             <label class="control-label col-sm-2">Phone Number:</label>
                             <div class="col-sm-6">
-                                <input type="tel" class="form-control" id="Mer_phone_number"  placeholder="Enter phone-number" required/>
+                                <input type="tel" class="form-control" id="Mer_phone_number"  placeholder="Enter phone-number" maxlength="10" required/>
                             </div>
                             <div id="mer_phn_err" class="err"></div>
                         </div>
@@ -137,7 +137,7 @@
                         <div id="pwd_err" class="err"></div>
                         <div class="form-group">
                             <div class="text-center">
-                            <input type="button" class="btn btn-primary" style="width:200px;" onclick="return merc_validateAndSend()" value="Sign-Up">
+                           <input type="submit" class="btn btn-primary" style="width:200px;" onclick="return merc_validateAndSend()" value="Sign-Up">
                           </div>
                         </div>
                     </form>
