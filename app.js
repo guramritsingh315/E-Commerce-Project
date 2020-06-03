@@ -1,11 +1,12 @@
 var http = require('http');
 var url = require('url');
-var fs = require('fs');
 var express = require('express');
 var app = express();
 const MongoClient = require('mongodb').MongoClient;
 const mongoURL = "mongodb://localhost/";
-const mongoose = require('mongoose');
+var path = require('path');
+app.set('views',path.join(__dirname,'public','views'));
+app.set('view engine','ejs');
 
 
 function readJSONBody(request, callback) 
@@ -27,9 +28,15 @@ app.listen(8080,function(error){
         console.log("Running at: 127.0.0.1:8080");
     }
 });
+
 app.use(express.static('public'));
 //handling customer data
-app.post('/customerData',function(request,response){
+app.get('/',function(request,response){
+    response.render('signup');
+});
+
+
+function handleCustomer(request,callback){
     readJSONBody(request,function(customerData){
         MongoClient.connect(mongoURL,{ useUnifiedTopology: true },function(err,db){
             if(err) throw err;
@@ -46,10 +53,21 @@ app.post('/customerData',function(request,response){
             dbo.collection("Users").insertOne(obj,function(err,db){
                 if(err) throw err;
                 console.log("1 user record created: ",customerData.name);
+                callback();
             });
         });
     });
+}
+
+//handling post requests
+app.post('/customerData',function(request,response){
+    handleCustomer(request,(err)=>{
+        console.log("render index.ejs");
+        response.render('index'); //Not working
+    });
 });
+
+
 app.post('/merchantData',function(request,response){
     readJSONBody(request,function(merchantData){
         MongoClient.connect(mongoURL,{ useUnifiedTopology: true },function(err,db){

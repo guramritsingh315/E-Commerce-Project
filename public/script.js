@@ -48,8 +48,8 @@ function Cust_validateAndSend(){
     };
      request.open('POST','/customerData');
      request.send(JSON.stringify(cust_form_data));
-     return true;
 }
+
 //capatializes first letter
 function capitalize(textboxid, str) {
     // string with alteast one character
