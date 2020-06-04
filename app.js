@@ -5,7 +5,8 @@ var app = express();
 const MongoClient = require('mongodb').MongoClient;
 const mongoURL = "mongodb://localhost/";
 var path = require('path');
-app.set('views',path.join(__dirname,'public','views'));
+
+app.set('views',path.join(__dirname,'views'));
 app.set('view engine','ejs');
 
 
@@ -34,9 +35,11 @@ app.use(express.static('public'));
 app.get('/',function(request,response){
     response.render('signup');
 });
-
-
-function handleCustomer(request,callback){
+app.get('/home',function(request,response){
+    response.render('index');
+})
+//handling post requests
+app.post('/customerData',function(request,response){
     readJSONBody(request,function(customerData){
         MongoClient.connect(mongoURL,{ useUnifiedTopology: true },function(err,db){
             if(err) throw err;
@@ -53,17 +56,8 @@ function handleCustomer(request,callback){
             dbo.collection("Users").insertOne(obj,function(err,db){
                 if(err) throw err;
                 console.log("1 user record created: ",customerData.name);
-                callback();
             });
         });
-    });
-}
-
-//handling post requests
-app.post('/customerData',function(request,response){
-    handleCustomer(request,(err)=>{
-        console.log("render index.ejs");
-        response.render('index'); //Not working
     });
 });
 

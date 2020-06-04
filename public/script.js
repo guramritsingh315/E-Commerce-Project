@@ -1,7 +1,8 @@
 //import { request } from "express";
 
 /*Validating customer form*/
-function Cust_validateAndSend(){
+
+function Cust_validateAndSend(callback){
    var request = new XMLHttpRequest();
     var Cust_name = document.getElementById('Cust-name').value.trim();
     var Cust_last_name= document.getElementById('Cust_last_name').value.trim();
@@ -48,6 +49,7 @@ function Cust_validateAndSend(){
     };
      request.open('POST','/customerData');
      request.send(JSON.stringify(cust_form_data));
+     return true;
 }
 
 //capatializes first letter
@@ -111,4 +113,8 @@ function merc_validateAndSend(){
     return true;
 }
 
-
+function openSignup(){
+    var request = new XMLHttpRequest;
+    request.open('GET','/signup');
+    request.send();
+}
