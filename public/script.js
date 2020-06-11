@@ -2,7 +2,7 @@
 
 /*Validating customer form*/
 
-function Cust_validateAndSend(callback){
+function Cust_validateAndSend(){
    var request = new XMLHttpRequest();
     var Cust_name = document.getElementById('Cust-name').value.trim();
     var Cust_last_name= document.getElementById('Cust_last_name').value.trim();
@@ -38,7 +38,7 @@ function Cust_validateAndSend(callback){
     else if(pwd1===pwd2){
         pass_err.innerHTML = "";
     }
-    var cust_form_data = {
+    /*var cust_form_data = {
         type:"customer",
         name:Cust_name,
         last_name:Cust_last_name,
@@ -46,9 +46,7 @@ function Cust_validateAndSend(callback){
         phone:Cust_phone_number,
         address:Cust_address,
         password:pwd2,
-    };
-     request.open('POST','/customerData');
-     request.send(JSON.stringify(cust_form_data));
+    };*/
      return true;
 }
 
@@ -98,23 +96,18 @@ function merc_validateAndSend(){
     if(mpwd1===mpwd2){
         pwd_err.innerHTML="";
     }
-    var mer_form_data = {
-        type:"merchant",
-        name:mer_name,
-        last_name:mer_last_name,
-        email:mer_email,
-        phone:mer_phn_num,
-        company:company_name,
-        address:mer_address,
-        password:mpwd2,
-    };
-    request.open('POST','/merchantData');
-    request.send(JSON.stringify(mer_form_data));
     return true;
 }
+
+
 
 function openSignup(){
     var request = new XMLHttpRequest;
     request.open('GET','/signup');
+    request.send();
+}
+function login_screen(){
+    var request = new XMLHttpRequest();
+    request.open('GET','/login_screen')
     request.send();
 }

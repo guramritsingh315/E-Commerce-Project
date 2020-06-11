@@ -1,28 +1,24 @@
 var http = require('http');
 var url = require('url');
+var bodyParser = require('body-parser');
 var express = require('express');
 var app = express();
-const MongoClient = require('mongodb').MongoClient;
-const mongoURL = "mongodb://localhost/";
 var path = require('path');
-
+const mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/UserData', { useNewUrlParser: true,useUnifiedTopology:true });
+var db=mongoose.connection;
+db.on('error',console.log.bind(console,"connection error"));
+db.once('open',function(callback){
+    console.log("connection successful");
+})
+app.use(express.static('public'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded(
+    {
+        extended:true,
+    }));
 app.set('views',path.join(__dirname,'views'));
 app.set('view engine','ejs');
-
-
-function readJSONBody(request, callback) 
-{
-  var body = '';
-  request.on('data', function(chunk) {
-					 body += chunk;
-			});
-
-  request.on('end', function() {
-					var data = JSON.parse(body);
-					callback(data);
-		   });
-}
-
 app.listen(8080,function(error){
     if(error) throw error;
     else{
@@ -30,16 +26,76 @@ app.listen(8080,function(error){
     }
 });
 
-app.use(express.static('public'));
-//handling customer data
+//handling get requests
 app.get('/',function(request,response){
     response.render('signup');
 });
 app.get('/home',function(request,response){
     response.render('index');
-})
+});
+app.get('/login_screen',function(request,response){
+    response.render('login');
+});
+
+
+
 //handling post requests
-app.post('/customerData',function(request,response){
+app.post('/customerSignup',function(req,res){
+    var name= req.body.name;
+    var lastName=req.body.lastName;
+    var email=req.body.Email;
+    var number=req.body.number;
+    var addres=req.body.address;
+    var password = req.body.password;
+    var data = {
+        userType:"customer",
+        name:name,
+        lastName:lastName,
+        email:email,
+        number:number,
+        address:addres,
+        password:password,
+    } 
+    db.collection("Users").insertOne(data,function(err,collection){
+        if(err) throw err;
+        console.log("1 Customer record created for: ",name);
+    })
+    return res.redirect('/home');
+});
+app.post('/merchantSignup',function(req,res){
+    var name=req.body.name;
+    var lastName=req.body.lastName;
+    var email=req.body.Email;
+    var number=req.body.number;
+    var company=req.body.company;
+    var address = req.body.address;
+    var password = req.body.password;
+    var data = {
+        userType:"merchant",
+        name:name,
+        lastName:lastName,
+        email:email,
+        number:number,
+        company:company,
+        address:address,
+        password:password,
+    }
+    db.collection("Users").insertOne(data,function(err,collection){
+        if(err) throw err;
+        console.log("1 merchant record created for company: ",company);
+    });
+    return res.redirect('/home');
+});
+app.post('/login',function(request,response){
+
+});
+
+
+
+
+
+/*
+function handleCustomer(request,response){
     readJSONBody(request,function(customerData){
         MongoClient.connect(mongoURL,{ useUnifiedTopology: true },function(err,db){
             if(err) throw err;
@@ -57,12 +113,11 @@ app.post('/customerData',function(request,response){
                 if(err) throw err;
                 console.log("1 user record created: ",customerData.name);
             });
+            return response.redirect("/home");
         });
     });
-});
-
-
-app.post('/merchantData',function(request,response){
+}
+function handleMerchant(request,response){
     readJSONBody(request,function(merchantData){
         MongoClient.connect(mongoURL,{ useUnifiedTopology: true },function(err,db){
             if(err) throw err;
@@ -83,4 +138,12 @@ app.post('/merchantData',function(request,response){
             });
         });
     });
+}
+//handling post requests
+app.post('/customerData',function(request,response){
+    handleCustomer(request,response);
 });
+
+app.post('/merchantData',function(request,response){
+   handleMerchant(request,response); 
+});*/
