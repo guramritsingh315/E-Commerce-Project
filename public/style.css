@@ -6,4 +6,55 @@
     color:red;
     font-weight: 400;
 }
-
+.login_box{
+    position: absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    border:1px solid black;
+    padding:25px;
+}
+#login_email{
+    border:2px solid crimson;
+    outline:none;
+    background: none;
+    padding:5px;
+    width:300px;
+    transition:ease 30ms;
+}
+#login_password{
+    border:2px solid crimson;
+    outline:none;
+    background: none;
+    padding:5px;
+    width:300px;
+    font-weight: bold;
+}
+#login_head{
+    text-align: center;
+    font-family: cursive;
+}
+#login{
+    outline: none;
+    background: none;
+    border:2px solid blue;
+    padding:5px 7px;
+    border-radius: 10px;
+    width:70px;
+    font-weight: bold;
+}
+#login:hover{
+    background:blue;
+    color:white;
+}
+.login_background{
+    height: 500px;
+    position: absolute;
+    left: -3%;
+    top:23%;
+}
+@media only screen and (max-width: 1000px) {
+    .login_background{
+        opacity: 10%;
+    }
+  }

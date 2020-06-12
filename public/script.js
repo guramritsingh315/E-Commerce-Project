@@ -1,7 +1,3 @@
-//import { request } from "express";
-
-/*Validating customer form*/
-
 function Cust_validateAndSend(){
    var request = new XMLHttpRequest();
     var Cust_name = document.getElementById('Cust-name').value.trim();
@@ -37,16 +33,7 @@ function Cust_validateAndSend(){
     }
     else if(pwd1===pwd2){
         pass_err.innerHTML = "";
-    }
-    /*var cust_form_data = {
-        type:"customer",
-        name:Cust_name,
-        last_name:Cust_last_name,
-        email:Cust_email,
-        phone:Cust_phone_number,
-        address:Cust_address,
-        password:pwd2,
-    };*/
+    }    
      return true;
 }
 
@@ -63,7 +50,6 @@ function capitalize(textboxid, str) {
 }
 /*merchant form validation*/
 function merc_validateAndSend(){
-    var request= new XMLHttpRequest();
     var mer_name=document.getElementById('Mer_name').value.trim();
     var mer_last_name=document.getElementById('Mer_last_name').value.trim();
     var mer_email=document.getElementById('Mer_email').value.trim();
@@ -98,16 +84,12 @@ function merc_validateAndSend(){
     }
     return true;
 }
-
-
-
-function openSignup(){
-    var request = new XMLHttpRequest;
-    request.open('GET','/signup');
-    request.send();
+function showPassword(){
+    var x = document.getElementById("login_password");
+    if (x.type === "password") {
+      x.type = "text";
+    } else {
+      x.type = "password";
+    }
 }
-function login_screen(){
-    var request = new XMLHttpRequest();
-    request.open('GET','/login_screen')
-    request.send();
-}
+

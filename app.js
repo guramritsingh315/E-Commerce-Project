@@ -10,7 +10,7 @@ var db=mongoose.connection;
 db.on('error',console.log.bind(console,"connection error"));
 db.once('open',function(callback){
     console.log("connection successful");
-})
+});
 app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded(
@@ -33,10 +33,16 @@ app.get('/',function(request,response){
 app.get('/home',function(request,response){
     response.render('index');
 });
-app.get('/login_screen',function(request,response){
-    response.render('login');
+app.get('/login.html',function(request,response){
+    response.sendFile(path.join(__dirname,'views','login.html'));
 });
-
+app.get('/signup',function(request,response){
+    response.render('signup');
+});
+app.post('/login',function(request,response){
+console.log("login trigered");
+return response.redirect('/home');
+});
 
 
 //handling post requests
@@ -86,9 +92,7 @@ app.post('/merchantSignup',function(req,res){
     });
     return res.redirect('/home');
 });
-app.post('/login',function(request,response){
 
-});
 
 
 
