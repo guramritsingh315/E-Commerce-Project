@@ -1,16 +1,25 @@
-var http = require('http');
-var url = require('url');
 var bodyParser = require('body-parser');
 var express = require('express');
 var app = express();
 var path = require('path');
 const mongoose = require('mongoose');
+var bcrypt = require('bcrypt');
+var jwt = require('jsonwebtoken');
+var users = express.Router();
+var cors =require('cors');
+//importing schemas
+const customer = require('./models/customer');
+const merchant = require('./models/merchant');
+const { response } = require('express');
+
 mongoose.connect('mongodb://localhost/UserData', { useNewUrlParser: true,useUnifiedTopology:true });
 var db=mongoose.connection;
 db.on('error',console.log.bind(console,"connection error"));
 db.once('open',function(callback){
     console.log("connection successful");
 });
+app.use(cors());
+process.env.SECRET_KEY = 'secret';
 app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded(
@@ -62,12 +71,32 @@ app.post('/customerSignup',function(req,res){
         address:addres,
         password:password,
     } 
-    db.collection("Users").insertOne(data,function(err,collection){
+    /*db.collection("Users").insertOne(data,function(err,collection){
         if(err) throw err;
         console.log("1 Customer record created for: ",name);
+    })*/
+    var user=db.collection("Users").findOne({email:req.body.email})
+    .then(user=>{
+        if(!user){
+            bcrypt.hash(req.body.password,10,(err,hash)=>{
+                data.password = hash;
+                db.collection("Users").insertOne(data,function(err,collection){
+                    if(err) throw err;
+                    console.log("1 Customer record Created for: ",data.name);
+                });
+            });
+            
+        }else{
+            console.log("error:user already exists");
+        }
     })
-    return res.redirect('/home');
+    .catch(err=>{
+        console.log(err);
+    })
 });
+
+
+
 app.post('/merchantSignup',function(req,res){
     var name=req.body.name;
     var lastName=req.body.lastName;
