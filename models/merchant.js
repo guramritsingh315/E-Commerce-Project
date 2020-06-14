@@ -28,4 +28,4 @@ const merchantSchema = new mongoose.Schema({
     }
 })
 
-module.exports = User = mongoose.model('Merchant',merchantSchema);
+module.exports = merchant = mongoose.model('Merchant',merchantSchema);

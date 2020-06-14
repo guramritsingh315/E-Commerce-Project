@@ -8,8 +8,8 @@ var jwt = require('jsonwebtoken');
 var users = express.Router();
 var cors =require('cors');
 //importing schemas
-const customer = require('./models/customer');
-const merchant = require('./models/merchant');
+const Customer = require('./models/customer');
+const Merchant = require('./models/merchant');
 const { response } = require('express');
 
 mongoose.connect('mongodb://localhost/UserData', { useNewUrlParser: true,useUnifiedTopology:true });
@@ -56,70 +56,83 @@ return response.redirect('/home');
 
 //handling post requests
 app.post('/customerSignup',function(req,res){
-    var name= req.body.name;
+    /*var name= req.body.name;
     var lastName=req.body.lastName;
     var email=req.body.Email;
     var number=req.body.number;
     var addres=req.body.address;
-    var password = req.body.password;
+    var password = req.body.password;*/
     var data = {
         userType:"customer",
-        name:name,
-        lastName:lastName,
-        email:email,
-        number:number,
-        address:addres,
-        password:password,
+        name:req.body.name,
+        lastName:req.body.lastName,
+        email:req.body.Email,
+        number:req.body.number,
+        address:req.body.address,
+        password:req.body.password,
     } 
-    /*db.collection("Users").insertOne(data,function(err,collection){
-        if(err) throw err;
-        console.log("1 Customer record created for: ",name);
-    })*/
-    var user=db.collection("Users").findOne({email:req.body.email})
-    .then(user=>{
-        if(!user){
+    Customer.findOne({email:req.body.Email})
+    .then(customer=>{
+        if(!customer){
             bcrypt.hash(req.body.password,10,(err,hash)=>{
                 data.password = hash;
-                db.collection("Users").insertOne(data,function(err,collection){
-                    if(err) throw err;
-                    console.log("1 Customer record Created for: ",data.name);
-                });
-            });
-            
+                Customer.create(data)
+                .then(customer=>{
+                    res.json('registered: '+req.body.name);
+                })
+                .catch(err=>{
+                    res.send('err: '+err);
+                })
+            })
         }else{
-            console.log("error:user already exists");
+            res.send({error:'user already exists'});
         }
     })
     .catch(err=>{
-        console.log(err);
+        res.send('err: '+err);
     })
 });
 
 
 
 app.post('/merchantSignup',function(req,res){
-    var name=req.body.name;
+    /*var name=req.body.name;
     var lastName=req.body.lastName;
     var email=req.body.Email;
     var number=req.body.number;
     var company=req.body.company;
     var address = req.body.address;
-    var password = req.body.password;
+    var password = req.body.password;*/
     var data = {
         userType:"merchant",
-        name:name,
-        lastName:lastName,
-        email:email,
-        number:number,
-        company:company,
-        address:address,
-        password:password,
+        name:req.body.name,
+        lastName:req.body.lastName,
+        email:req.body.Email,
+        number:req.body.number,
+        company:req.body.number,
+        address:req.body.address,
+        password:req.body.password,
     }
-    db.collection("Users").insertOne(data,function(err,collection){
-        if(err) throw err;
-        console.log("1 merchant record created for company: ",company);
-    });
-    return res.redirect('/home');
+    Merchant.findOne({email:req.body.Email})
+    .then(merchant=>{
+        if(!merchant){
+            bcrypt.hash(req.body.password,10,(err,hash)=>{
+                data.password = hash;
+                Merchant.create(data)
+                .then(customer=>{
+                    res.json('registered: '+req.body.company);
+                })
+                .catch(err=>{
+                    res.send('err: '+err);
+                })
+            })
+        }else{
+            res.send({error:'user already exists'});
+        }
+    })
+    .catch(err=>{
+        res.send('err: '+err);
+    })
 });
 
 
