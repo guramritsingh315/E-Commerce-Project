@@ -11,6 +11,7 @@ var cors =require('cors');
 const Customer = require('./models/customer');
 const Merchant = require('./models/merchant');
 const { response } = require('express');
+const customer = require('./models/customer');
 
 mongoose.connect('mongodb://localhost/UserData', { useNewUrlParser: true,useUnifiedTopology:true });
 var db=mongoose.connection;
@@ -49,8 +50,13 @@ app.get('/signup',function(request,response){
     response.render('signup');
 });
 app.post('/login',function(request,response){
-console.log("login trigered");
-return response.redirect('/home');
+if(request.body.merchant){
+    console.log("merchant login");
+}
+else{
+    console.log("customer login")
+}
+
 });
 
 
@@ -72,13 +78,14 @@ app.post('/customerSignup',function(req,res){
         password:req.body.password,
     } 
     Customer.findOne({email:req.body.Email})
-    .then(customer=>{
-        if(!customer){
+    .then(user=>{
+        if(!user){
             bcrypt.hash(req.body.password,10,(err,hash)=>{
                 data.password = hash;
                 Customer.create(data)
                 .then(customer=>{
-                    res.json('registered: '+req.body.name);
+                    //res.json('registered: '+req.body.name);
+                    return res.redirect('/login.html');
                 })
                 .catch(err=>{
                     res.send('err: '+err);
@@ -96,20 +103,13 @@ app.post('/customerSignup',function(req,res){
 
 
 app.post('/merchantSignup',function(req,res){
-    /*var name=req.body.name;
-    var lastName=req.body.lastName;
-    var email=req.body.Email;
-    var number=req.body.number;
-    var company=req.body.company;
-    var address = req.body.address;
-    var password = req.body.password;*/
     var data = {
         userType:"merchant",
         name:req.body.name,
         lastName:req.body.lastName,
         email:req.body.Email,
         number:req.body.number,
-        company:req.body.number,
+        company:req.body.company,
         address:req.body.address,
         password:req.body.password,
     }
@@ -127,7 +127,7 @@ app.post('/merchantSignup',function(req,res){
                 })
             })
         }else{
-            res.send({error:'user already exists'});
+            res.send({error:'merchant record already exists'});
         }
     })
     .catch(err=>{
