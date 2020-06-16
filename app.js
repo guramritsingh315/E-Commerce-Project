@@ -10,8 +10,6 @@ var cors =require('cors');
 //importing schemas
 const Customer = require('./models/customer');
 const Merchant = require('./models/merchant');
-const { response } = require('express');
-const customer = require('./models/customer');
 
 mongoose.connect('mongodb://localhost/UserData', { useNewUrlParser: true,useUnifiedTopology:true });
 var db=mongoose.connection;
@@ -49,25 +47,42 @@ app.get('/login.html',function(request,response){
 app.get('/signup',function(request,response){
     response.render('signup');
 });
-app.post('/login',function(request,response){
-if(request.body.merchant){
-    console.log("merchant login");
-}
-else{
-    console.log("customer login")
-}
 
-});
 
 
 //handling post requests
+app.post('/login',function(req,res){
+    if(req.body.merchant){
+        Merchant.findOne(req.body.email)
+        .then(user=>{
+            if(user){
+                if(bcrypt.compareSync(req.body.password,user.password)){
+                    const payload = {
+                        _id:user._id,
+                        name:user.name,
+                        last_name:user.lastName,
+                        email:user.email,
+                    };
+                    let token = jwt.sign(payload,process.env.SECRET_KEY,{expiresIn:1440});
+                    res.send(token);
+                }else{
+                    //passwords do not match
+                    res.json({error:'passwords do not match'});
+                }
+            }else{
+                res.json({error:'User does not exist'});
+            }
+        })
+        .catch(err=>{
+            res.send('error: '+err);
+        })
+    }
+    else{
+        console.log("customer login")
+    }
+    
+    });
 app.post('/customerSignup',function(req,res){
-    /*var name= req.body.name;
-    var lastName=req.body.lastName;
-    var email=req.body.Email;
-    var number=req.body.number;
-    var addres=req.body.address;
-    var password = req.body.password;*/
     var data = {
         userType:"customer",
         name:req.body.name,
@@ -120,7 +135,8 @@ app.post('/merchantSignup',function(req,res){
                 data.password = hash;
                 Merchant.create(data)
                 .then(customer=>{
-                    res.json('registered: '+req.body.company);
+                    //res.json('registered: '+req.body.company);
+                    return res.redirect("/login.html");
                 })
                 .catch(err=>{
                     res.send('err: '+err);
