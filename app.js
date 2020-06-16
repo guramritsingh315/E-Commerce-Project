@@ -64,12 +64,12 @@ app.post('/login',function(req,res){
                         email:user.email,
                     };
                     let token = jwt.sign(payload,process.env.SECRET_KEY,{expiresIn:1440});
-                    res.send(token);
+                    res.render('index',{token:token});
                 }else{
-                    //passwords do not match
-                    res.json({error:'passwords do not match'});
-                }
-            }else{
+                    //passwords do not match and generating a fake message to preserve security
+                    res.json({error:'user does not exist'});
+                } 
+            }else{ 
                 res.json({error:'User does not exist'});
             }
         })
@@ -78,10 +78,32 @@ app.post('/login',function(req,res){
         })
     }
     else{
-        console.log("customer login")
+        Customer.findOne(req.body.email)
+        .then(user=>{
+            if(user){
+                if(bcrypt.compareSync(req.body.password,user.password)){
+                    const payload = {
+                        _id:user._id,
+                        name:user.name,
+                        last_name:user.lastName,
+                        email:user.email,
+                    };
+                    let token = jwt.sign(payload,process.env.SECRET_KEY,{expiresIn:1440});
+                    res.render('index',{token:token});
+                }else{
+                    //passwords do not match and generating a fake message to preserve security
+                    res.json({error:'user does not exist'});
+                } 
+            }else{ 
+                res.json({error:'User does not exist'});
+            }
+        })
+        .catch(err=>{
+            res.send('error: '+err);
+        })
     }
     
-    });
+});
 app.post('/customerSignup',function(req,res){
     var data = {
         userType:"customer",
