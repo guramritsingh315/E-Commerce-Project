@@ -7,6 +7,7 @@ var bcrypt = require('bcrypt');
 var jwt = require('jsonwebtoken');
 var users = express.Router();
 var cors =require('cors');
+var cookieParser = require('cookie-parser');
 //importing schemas
 const Customer = require('./models/customer');
 const Merchant = require('./models/merchant');
@@ -25,6 +26,7 @@ app.use(bodyParser.urlencoded(
     {
         extended:true,
     }));
+app.use(cookieParser());
 app.set('views',path.join(__dirname,'views'));
 app.set('view engine','ejs');
 app.listen(8080,function(error){
@@ -51,7 +53,7 @@ app.get('/signup',function(request,response){
 
 
 //handling post requests
-app.post('/login',function(req,res){
+app.post('/authenticate',function(req,res){
     if(req.body.merchant){
         Merchant.findOne(req.body.email)
         .then(user=>{
@@ -64,7 +66,8 @@ app.post('/login',function(req,res){
                         email:user.email,
                     };
                     let token = jwt.sign(payload,process.env.SECRET_KEY,{expiresIn:1440});
-                    res.render('index',{token:token});
+                    res.cookie('token',token); 
+                    res.redirect("/home");
                 }else{
                     //passwords do not match and generating a fake message to preserve security
                     res.json({error:'user does not exist'});
@@ -89,7 +92,8 @@ app.post('/login',function(req,res){
                         email:user.email,
                     };
                     let token = jwt.sign(payload,process.env.SECRET_KEY,{expiresIn:1440});
-                    res.render('index',{token:token});
+                    res.cookie('token',token); 
+                    res.redirect("/home");
                 }else{
                     //passwords do not match and generating a fake message to preserve security
                     res.json({error:'user does not exist'});
