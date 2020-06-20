@@ -64,3 +64,7 @@
       background-repeat: no-repeat;
       background-position: fixed;
   }
+  .welcome-label{
+      color:white;
+      cursor: default;
+  }
