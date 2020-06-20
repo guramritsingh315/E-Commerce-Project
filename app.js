@@ -11,7 +11,7 @@ var cookieParser = require('cookie-parser');
 //importing schemas
 const Customer = require('./models/customer');
 const Merchant = require('./models/merchant');
-
+//connecting to data base
 mongoose.connect('mongodb://localhost/UserData', { useNewUrlParser: true,useUnifiedTopology:true });
 var db=mongoose.connection;
 db.on('error',console.log.bind(console,"connection error"));
@@ -78,7 +78,7 @@ app.post('/authenticate',function(req,res){
                         last_name:user.lastName,
                         email:user.email,
                     };
-                    let token = jwt.sign(payload,process.env.SECRET_KEY,{expiresIn:1440});
+                    let token = jwt.sign(payload,process.env.SECRET_KEY,{expiresIn:24000});
                     res.cookie('token',token); 
                     res.redirect("/home");
                 }else{
@@ -153,7 +153,10 @@ app.post('/customerSignup',function(req,res){
         res.send('err: '+err);
     })
 });
-
+app.post("/logout",function(req,res){
+    res.clearCookie("token");
+     res.redirect("/");
+})
 
 
 app.post('/merchantSignup',function(req,res){

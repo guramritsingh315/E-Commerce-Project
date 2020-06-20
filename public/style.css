@@ -67,4 +67,8 @@
   .welcome-label{
       color:white;
       cursor: default;
+      font-size: medium;
+  }
+  .logout{
+      padding:5px;
   }
