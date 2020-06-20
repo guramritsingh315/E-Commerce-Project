@@ -40,8 +40,14 @@ app.listen(8080,function(error){
 app.get('/',function(request,response){
     response.render('signup');
 });
-app.get('/home',function(request,response){
-    response.render('index');
+app.get('/home',ensureToken,function(request,response){
+    jwt.verify(request.cookies.token,process.env.SECRET_KEY,function(err,data){
+        if(err) throw err;
+        else{
+            user = data;
+            response.render('index',{name:user.name});
+        }
+    })
 });
 app.get('/login.html',function(request,response){
     response.sendFile(path.join(__dirname,'views','login.html'));
@@ -50,7 +56,14 @@ app.get('/signup',function(request,response){
     response.render('signup');
 });
 
-
+function ensureToken(req, res, next) {
+    if (req.cookies.token) {
+      next();
+    } else {
+      console.log("here");
+      res.sendStatus(403);
+    }
+  }
 
 //handling post requests
 app.post('/authenticate',function(req,res){
