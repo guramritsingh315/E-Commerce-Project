@@ -8,9 +8,11 @@ var jwt = require('jsonwebtoken');
 var users = express.Router();
 var cors =require('cors');
 var cookieParser = require('cookie-parser');
+var passport = require('passport');
 //importing schemas
 const Customer = require('./models/customer');
 const Merchant = require('./models/merchant');
+const { response } = require('express');
 //connecting to data base
 mongoose.connect('mongodb://localhost/UserData', { useNewUrlParser: true,useUnifiedTopology:true });
 var db=mongoose.connection;
@@ -55,6 +57,15 @@ app.get('/login.html',function(request,response){
 app.get('/signup',function(request,response){
     response.render('signup');
 });
+app.get('/admin',function(req,res){
+    res.render('admin');
+});
+app.get('/merchant_data',function(req,res){
+    Merchant.find({},function(err,data){
+        if(err) throw err;
+        res.send(data);
+    })
+})
 
 function ensureToken(req, res, next) {
     if (req.cookies.token) {
@@ -67,12 +78,16 @@ function ensureToken(req, res, next) {
 
 //handling post requests
 app.post('/authenticate',function(req,res){
-    if(req.body.merchant){
-        Merchant.findOne(req.body.email)
+    if(req.body.login_email==="admin@ecommerce.com" && req.body.password==="admin123"){
+        res.redirect("/admin");
+    }
+    else if(req.body.merchant==='merchant'){
+        Merchant.findOne({email:req.body.login_email})
         .then(user=>{
+            console.log(user);
             if(user){
                 if(bcrypt.compareSync(req.body.password,user.password)){
-                    const payload = {
+                    var payload = {
                         _id:user._id,
                         name:user.name,
                         last_name:user.lastName,
@@ -82,8 +97,8 @@ app.post('/authenticate',function(req,res){
                     res.cookie('token',token); 
                     res.redirect("/home");
                 }else{
-                    //passwords do not match and generating a fake message to preserve security
-                    res.json({error:'user does not exist'});
+                    //passwords do not match
+                    res.json({error:'Passwords do not match!!'});
                 } 
             }else{ 
                 res.json({error:'User does not exist'});
@@ -93,23 +108,25 @@ app.post('/authenticate',function(req,res){
             res.send('error: '+err);
         })
     }
-    else{
-        Customer.findOne(req.body.email)
+    else if(typeof(req.body.merchant)==='undefined'){
+        Customer.findOne({email:req.body.login_email})
         .then(user=>{
+            console.log(user);
             if(user){
                 if(bcrypt.compareSync(req.body.password,user.password)){
-                    const payload = {
+                    var Cust_payload = {
                         _id:user._id,
                         name:user.name,
                         last_name:user.lastName,
                         email:user.email,
                     };
-                    let token = jwt.sign(payload,process.env.SECRET_KEY,{expiresIn:1440});
+                    let token = jwt.sign(Cust_payload,process.env.SECRET_KEY,{expiresIn:1440});
+                    console.log(token);
                     res.cookie('token',token); 
                     res.redirect("/home");
                 }else{
-                    //passwords do not match and generating a fake message to preserve security
-                    res.json({error:'user does not exist'});
+                    //passwords do not match 
+                    res.json({error:'Passwords do not match!!'});
                 } 
             }else{ 
                 res.json({error:'User does not exist'});
@@ -119,6 +136,7 @@ app.post('/authenticate',function(req,res){
             res.send('error: '+err);
         })
     }
+    
     
 });
 app.post('/customerSignup',function(req,res){
@@ -155,6 +173,7 @@ app.post('/customerSignup',function(req,res){
 });
 app.post("/logout",function(req,res){
     res.clearCookie("token");
+    req.logOut();
      res.redirect("/");
 })
 

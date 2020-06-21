@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <title>Home</title>
+</head>
+<body>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">E-commerce</a>
+            </div>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href='#' class="welcome-label">Welcome Administrator</a></li>
+                <li><a href="#"><form method="post" action="/logout"><input type="submit" value="logout" class="logout"/></form></a></li>
+            </ul>
+        </div>
+    </nav>
+    <nav class="navbar">
+        <div class="container">
+            <button type="button" class="btn btn-primary" onclick="merchant_req()" aria-selected="true">Merchant data</button>
+            <button type="button" class="btn btn-primary" onclick="customer_req()">Customer data</button>
+        </div>
+    </nav>
+    <div class="container">
+        
+    <ul class="list-group" id="users">
+        
+    </ul>
+</div>
+    <script src="script.js"></script>
+</body>
+</html>
