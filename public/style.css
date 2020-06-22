@@ -76,5 +76,10 @@
       float:right;
       text-decoration: none;
       font-weight: 400;
+      font-size: 20px;
+      cursor: pointer;
+  }
+  .cross:hover{
+      text-decoration: none;
   }
   

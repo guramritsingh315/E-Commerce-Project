@@ -92,13 +92,9 @@ function showPassword(){
       x.type = "password";
     }
 }
-var executed = false
 function merchant_req(){
-    if(executed===true){
-        return;
-    }
-    if(!executed){
     var userDisplay = document.getElementById("users");
+    userDisplay.innerHTML="";
     var xhttp = new XMLHttpRequest;
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
@@ -111,14 +107,45 @@ function merchant_req(){
               var crossD = document.createTextNode('\u00d7');
               cross.appendChild(crossD);
               cross.setAttribute("class","cross");
+              cross.setAttribute("href","#");
+              cross.setAttribute("onclick","delete_record()");
               li.appendChild(liData);
               li.appendChild(cross);
               userDisplay.appendChild(li);
           })
         }
-        executed = true;
     }
-      };
+      
     xhttp.open('GET','/merchant_data');
     xhttp.send();
+}
+function customer_req(){
+    var userDisplay = document.getElementById("users");
+    userDisplay.innerHTML="";
+    var xhttp = new XMLHttpRequest;
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          data = JSON.parse(this.responseText);
+          data.forEach(function(user){
+              var li = document.createElement("li");
+              li.setAttribute("class","list-group-item");
+              var liData = document.createTextNode(user.email);
+              var cross = document.createElement("a");
+              var crossD = document.createTextNode('\u00d7');
+              cross.appendChild(crossD);
+              cross.setAttribute("class","cross");
+              cross.setAttribute("href","#");
+              cross.setAttribute("onclick","delete_record()");
+              li.appendChild(liData);
+              li.appendChild(cross);
+              userDisplay.appendChild(li);
+          })
+        }
+    }
+
+    xhttp.open('GET','/customer_data');
+    xhttp.send();
+}
+function delete_record(){
+    console.log("delete testinfg");
 }

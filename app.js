@@ -13,6 +13,7 @@ var passport = require('passport');
 const Customer = require('./models/customer');
 const Merchant = require('./models/merchant');
 const { response } = require('express');
+const { allowedNodeEnvironmentFlags } = require('process');
 //connecting to data base
 mongoose.connect('mongodb://localhost/UserData', { useNewUrlParser: true,useUnifiedTopology:true });
 var db=mongoose.connection;
@@ -60,18 +61,33 @@ app.get('/signup',function(request,response){
 app.get('/admin',function(req,res){
     res.render('admin');
 });
-app.get('/merchant_data',function(req,res){
-    Merchant.find({},function(err,data){
+app.get('/merchant_data',ensureToken,function(req,res){
+    jwt.verify(req.cookies.token,process.env.SECRET_KEY,function(err,data){
         if(err) throw err;
-        res.send(data);
-    })
+        else{
+            Merchant.find({},function(err,data){
+                if(err) throw err;
+                res.send(data);
+            })
+        }
+    })  
+});
+app.get('/customer_data',ensureToken,function(req,res){
+    jwt.verify(req.cookies.token,process.env.SECRET_KEY,function(err,data){
+        if(err) throw err;
+        else{
+            Customer.find({},function(err,data){
+                if(err) throw err;
+                res.send(data);
+            })
+        }
+    }) 
 })
 
 function ensureToken(req, res, next) {
     if (req.cookies.token) {
       next();
     } else {
-      console.log("here");
       res.sendStatus(403);
     }
   }
@@ -79,6 +95,12 @@ function ensureToken(req, res, next) {
 //handling post requests
 app.post('/authenticate',function(req,res){
     if(req.body.login_email==="admin@ecommerce.com" && req.body.password==="admin123"){
+        var admin_payload={
+            name:"Administrator",
+            email:"admin@ecommerce.com"
+        }
+        let token = jwt.sign(admin_payload,process.env.SECRET_KEY,{expiresIn:24000});
+        res.cookie('token',token);
         res.redirect("/admin");
     }
     else if(req.body.merchant==='merchant'){
@@ -211,62 +233,3 @@ app.post('/merchantSignup',function(req,res){
         res.send('err: '+err);
     })
 });
-
-
-
-
-
-
-/*
-function handleCustomer(request,response){
-    readJSONBody(request,function(customerData){
-        MongoClient.connect(mongoURL,{ useUnifiedTopology: true },function(err,db){
-            if(err) throw err;
-            dbo=db.db("UserData");
-            var obj = {
-                type:customerData.type,
-                name:customerData.name,
-                last_name:customerData.last_name,
-                email:customerData.email,
-                phone:customerData.phone,
-                address:customerData.address,
-                password:customerData.password,            
-            };
-            dbo.collection("Users").insertOne(obj,function(err,db){
-                if(err) throw err;
-                console.log("1 user record created: ",customerData.name);
-            });
-            return response.redirect("/home");
-        });
-    });
-}
-function handleMerchant(request,response){
-    readJSONBody(request,function(merchantData){
-        MongoClient.connect(mongoURL,{ useUnifiedTopology: true },function(err,db){
-            if(err) throw err;
-            dbo=db.db("UserData");
-            var obj = {
-                type:merchantData.type,
-                name:merchantData.name,
-                last_name:merchantData.last_name,
-                email:merchantData.email,
-                phone:merchantData.phone,
-                address:merchantData.address,
-                password:merchantData.password,       
-                company:merchantData.company,     
-            };
-            dbo.collection("Users").insertOne(obj,function(err,db){
-                if(err) throw err;
-                console.log("1 merchant record created for: ",merchantData.company);
-            });
-        });
-    });
-}
-//handling post requests
-app.post('/customerData',function(request,response){
-    handleCustomer(request,response);
-});
-
-app.post('/merchantData',function(request,response){
-   handleMerchant(request,response); 
-});*/
