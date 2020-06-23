@@ -94,7 +94,7 @@ function ensureToken(req, res, next) {
 
 //handling post requests
 app.post('/authenticate',function(req,res){
-    if(req.body.login_email==="admin@ecommerce.com" && req.body.password==="admin123"){
+    if(req.body.login_email==="admin@ecommerce.com" && req.body.login_password==="admin123"){
         var admin_payload={
             name:"Administrator",
             email:"admin@ecommerce.com"
@@ -106,9 +106,8 @@ app.post('/authenticate',function(req,res){
     else if(req.body.merchant==='merchant'){
         Merchant.findOne({email:req.body.login_email})
         .then(user=>{
-            console.log(user);
             if(user){
-                if(bcrypt.compareSync(req.body.password,user.password)){
+                if(bcrypt.compareSync(req.body.login_password,user.password)){
                     var payload = {
                         _id:user._id,
                         name:user.name,
@@ -133,9 +132,8 @@ app.post('/authenticate',function(req,res){
     else if(typeof(req.body.merchant)==='undefined'){
         Customer.findOne({email:req.body.login_email})
         .then(user=>{
-            console.log(user);
             if(user){
-                if(bcrypt.compareSync(req.body.password,user.password)){
+                if(bcrypt.compareSync(req.body.login_password,user.password)){
                     var Cust_payload = {
                         _id:user._id,
                         name:user.name,
@@ -143,7 +141,6 @@ app.post('/authenticate',function(req,res){
                         email:user.email,
                     };
                     let token = jwt.sign(Cust_payload,process.env.SECRET_KEY,{expiresIn:1440});
-                    console.log(token);
                     res.cookie('token',token); 
                     res.redirect("/home");
                 }else{

@@ -146,6 +146,9 @@ function customer_req(){
     xhttp.open('GET','/customer_data');
     xhttp.send();
 }
+
 function delete_record(){
-    console.log("delete testinfg");
+   var target = event.target;
+   var li = target.parentNode;
+    var target_email = li.firstChild.textContent;
 }
