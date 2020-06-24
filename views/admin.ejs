@@ -1,43 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Untitled</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <title>Home</title>
 </head>
 <body>
-    <nav class="navbar navbar-inverse">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="#">E-commerce</a>
+    <div>
+        <nav class="navbar navbar-light navbar-expand-md sticky-top navigation-clean-button" style="height:80px;background-color:#37434d;color:#ffffff;">
+            <div class="container-fluid"><a class="navbar-brand" href="#"><i class="fa fa-globe"></i>&nbsp;Guramrit's E-Commerce</a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+                <div
+                    class="collapse navbar-collapse" id="navcol-1">
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item" role="presentation"><a class="nav-link" style="color:#ffffff;" href="signup">Welcome, Administrator</a></li>
+                        <li class="nav-item" role="presentation"><a class="nav-link" data-bs-hover-animate="bounce" style="color:#ffffff;" href="signup"><form method="post" action="/logout"><input type="submit" value="logout" class="logout"/></form></a></li>
+                    </ul>
             </div>
-            <ul class="nav navbar-nav navbar-right">
-                <li></li>
-                <li><a href="#"><form method="post" action="/logout"><input type="submit" value="logout" class="logout"/></form></a></li>
-            </ul>
-        </div>
+    </div>
     </nav>
-    <div class="container">
-    <h4 class="welcome-label">Welcome, Administrator</h4>
-</div>
+    </div>
     <nav class="navbar">
         <div class="container">
-            <center>
+            
             <button type="button" class="btn btn-primary" onclick="merchant_req()" aria-selected="true">Merchant data</button>
+            <p id="user_info"></p>
             <button type="button" class="btn btn-primary" onclick="customer_req()">Customer data</button>
-        </center>
         </div>
     </nav>
-    <div class="container">
-        <h3>User</h3>
-    <ul class="list-group" id="users">
-        
-    </ul>
+
+<div class="container">
+    <table class="table" id="user_table">
+        <thead class="thead-light">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Phone number</th>
+            <th scope="col">Address</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+        <tbody id="table_data">
+            
+        </tbody>
+    </table>
+    <table id="table_data">
+            
+    </table>
 </div>
-    <script src="script.js"></script>
+
+<script src="script.js"></script>
+
 </body>
 </html>

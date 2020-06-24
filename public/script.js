@@ -1,3 +1,5 @@
+//const { Document } = require("mongoose");
+
 function Cust_validateAndSend(){
    var request = new XMLHttpRequest();
     var Cust_name = document.getElementById('Cust-name').value.trim();
@@ -93,25 +95,55 @@ function showPassword(){
     }
 }
 function merchant_req(){
-    var userDisplay = document.getElementById("users");
-    userDisplay.innerHTML="";
+    document.getElementById("user_info").innerHTML = "Displaying: Merchant Record"
+    var table = document.getElementById("table_data");
+    table.innerHTML="";
     var xhttp = new XMLHttpRequest;
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
           data = JSON.parse(this.responseText);
+          var i=1;
           data.forEach(function(user){
-              var li = document.createElement("li");
-              li.setAttribute("class","list-group-item");
-              var liData = document.createTextNode(user.email);
-              var cross = document.createElement("a");
-              var crossD = document.createTextNode('\u00d7');
-              cross.appendChild(crossD);
-              cross.setAttribute("class","cross");
-              cross.setAttribute("href","#");
-              cross.setAttribute("onclick","delete_record()");
-              li.appendChild(liData);
-              li.appendChild(cross);
-              userDisplay.appendChild(li);
+              var tr = document.createElement('tr');
+              var no = document.createElement('th');
+              no.setAttribute("scope","row");
+              var name = document.createElement('td');
+              var email = document.createElement('td');
+              var phone = document.createElement('td');
+              var address = document.createElement('td');
+              var action = document.createElement('td');
+              var no_data = document.createTextNode(i);
+              var name_data = document.createTextNode(user.name+" "+user.lastName);
+              var email_data = document.createTextNode(user.email);
+              var phone_data = document.createTextNode(user.number);
+              var address_data = document.createTextNode(user.address);
+              var delete_button = document.createElement('input');
+              delete_button.setAttribute("type","button");
+              delete_button.setAttribute("class","btn btn-danger");
+              delete_button.setAttribute("style","margin:3px 3px 3px 3px;");
+              delete_button.setAttribute("value","Delete");
+              delete_button.setAttribute("onclick","Cust_delete_record()");
+              var edit_button = document.createElement('input');
+              edit_button.setAttribute("type","button");
+              edit_button.setAttribute("class","btn btn-warning");
+              edit_button.setAttribute("value","Edit");
+              edit_button.setAttribute("onclick","Cust_edit_record()");
+              
+              no.appendChild(no_data);
+              name.appendChild(name_data);
+              email.appendChild(email_data);
+              phone.appendChild(phone_data);
+              address.appendChild(address_data);
+              action.appendChild(delete_button);
+              action.appendChild(edit_button);
+              tr.appendChild(no);
+              tr.appendChild(name);
+              tr.appendChild(email);
+              tr.appendChild(phone);
+              tr.appendChild(address);
+              tr.appendChild(action);
+              table.appendChild(tr);
+              i++;
           })
         }
     }
@@ -120,25 +152,55 @@ function merchant_req(){
     xhttp.send();
 }
 function customer_req(){
-    var userDisplay = document.getElementById("users");
-    userDisplay.innerHTML="";
+    document.getElementById("user_info").innerHTML = "Displaying: Customer Record"
+    var table = document.getElementById("table_data");
+    table.innerHTML="";
     var xhttp = new XMLHttpRequest;
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
           data = JSON.parse(this.responseText);
+          var i=1;
           data.forEach(function(user){
-              var li = document.createElement("li");
-              li.setAttribute("class","list-group-item");
-              var liData = document.createTextNode(user.email);
-              var cross = document.createElement("a");
-              var crossD = document.createTextNode('\u00d7');
-              cross.appendChild(crossD);
-              cross.setAttribute("class","cross");
-              cross.setAttribute("href","#");
-              cross.setAttribute("onclick","delete_record()");
-              li.appendChild(liData);
-              li.appendChild(cross);
-              userDisplay.appendChild(li);
+              var tr = document.createElement('tr');
+              var no = document.createElement('th');
+              no.setAttribute("scope","row");
+              var name = document.createElement('td');
+              var email = document.createElement('td');
+              var phone = document.createElement('td');
+              var address = document.createElement('td');
+              var action = document.createElement('td');
+              var no_data = document.createTextNode(i);
+              var name_data = document.createTextNode(user.name+" "+user.lastName);
+              var email_data = document.createTextNode(user.email);
+              var phone_data = document.createTextNode(user.number);
+              var address_data = document.createTextNode(user.address);
+              var delete_button = document.createElement('input');
+              delete_button.setAttribute("type","button");
+              delete_button.setAttribute("class","btn btn-danger");
+              delete_button.setAttribute("style","margin:3px 3px 3px 3px;");
+              delete_button.setAttribute("value","Delete");
+              delete_button.setAttribute("onclick","Cust_delete_record()");
+              var edit_button = document.createElement('input');
+              edit_button.setAttribute("type","button");
+              edit_button.setAttribute("class","btn btn-warning");
+              edit_button.setAttribute("value","Edit");
+              edit_button.setAttribute("onclick","Cust_edit_record()");
+              
+              no.appendChild(no_data);
+              name.appendChild(name_data);
+              email.appendChild(email_data);
+              phone.appendChild(phone_data);
+              address.appendChild(address_data);
+              action.appendChild(delete_button);
+              action.appendChild(edit_button);
+              tr.appendChild(no);
+              tr.appendChild(name);
+              tr.appendChild(email);
+              tr.appendChild(phone);
+              tr.appendChild(address);
+              tr.appendChild(action);
+              table.appendChild(tr);
+              i++;
           })
         }
     }
@@ -146,9 +208,9 @@ function customer_req(){
     xhttp.open('GET','/customer_data');
     xhttp.send();
 }
-
-function delete_record(){
-   var target = event.target;
-   var li = target.parentNode;
-    var target_email = li.firstChild.textContent;
+function Cust_delete_record(){
+    console.log("delete record");
+}
+function Cust_edit_record(){
+    console.log("edit record");
 }
