@@ -91,7 +91,18 @@ function ensureToken(req, res, next) {
       res.sendStatus(403);
     }
   }
-
+  function readJSONBody(request, callback) 
+  {
+    var body = '';
+    request.on('data', function(chunk) {
+                       body += chunk;
+              });
+  
+    request.on('end', function() {
+                      var data = JSON.parse(body);
+                      callback(data);
+             });
+  }
 //handling post requests
 app.post('/authenticate',function(req,res){
     if(req.body.login_email==="admin@ecommerce.com" && req.body.login_password==="admin123"){
@@ -193,10 +204,32 @@ app.post('/customerSignup',function(req,res){
 app.post("/logout",function(req,res){
     res.clearCookie("token");
     req.logOut();
-     res.redirect("/");
+     res.redirect("/login.html");
 })
+// can not send response or responsible is not visible at customer side
+app.post('/delete_cust',function(req,res){
+    readJSONBody(req,function(cust){
+        var query = {email:cust.email};
+        Customer.deleteOne(query,function(err,obj){
+            if(err) throw err;
+        }).then(cust=>{
+            res.send("Deletion Successfull");
+        }).catch(err=>{
+            res.send("Something went wrong!!");
+        })     
+    })
+});
+app.post('/updateCustomer',function(req,res){
+    console.log(req.body.firstname);
+    Customer.findOne({email:req.body.email},function(err,data){
+        if(err) throw err;
+        else{
+            //update customer data here
 
-
+            res.json("customer updation pending");
+        }
+    })
+})
 app.post('/merchantSignup',function(req,res){
     var data = {
         userType:"merchant",

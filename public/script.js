@@ -122,12 +122,12 @@ function merchant_req(){
               delete_button.setAttribute("class","btn btn-danger");
               delete_button.setAttribute("style","margin:3px 3px 3px 3px;");
               delete_button.setAttribute("value","Delete");
-              delete_button.setAttribute("onclick","Cust_delete_record()");
+              delete_button.setAttribute("onclick","mer_delete_record()");
               var edit_button = document.createElement('input');
               edit_button.setAttribute("type","button");
               edit_button.setAttribute("class","btn btn-warning");
               edit_button.setAttribute("value","Edit");
-              edit_button.setAttribute("onclick","Cust_edit_record()");
+              edit_button.setAttribute("onclick","mer_edit_record()");
               
               no.appendChild(no_data);
               name.appendChild(name_data);
@@ -166,11 +166,13 @@ function customer_req(){
               no.setAttribute("scope","row");
               var name = document.createElement('td');
               var email = document.createElement('td');
+              var lastName = document.createElement('td');
               var phone = document.createElement('td');
               var address = document.createElement('td');
               var action = document.createElement('td');
               var no_data = document.createTextNode(i);
-              var name_data = document.createTextNode(user.name+" "+user.lastName);
+              var lastName_data = document.createTextNode(user.lastName);
+              var name_data = document.createTextNode(user.name);
               var email_data = document.createTextNode(user.email);
               var phone_data = document.createTextNode(user.number);
               var address_data = document.createTextNode(user.address);
@@ -188,6 +190,7 @@ function customer_req(){
               
               no.appendChild(no_data);
               name.appendChild(name_data);
+              lastName.appendChild(lastName_data);
               email.appendChild(email_data);
               phone.appendChild(phone_data);
               address.appendChild(address_data);
@@ -195,6 +198,7 @@ function customer_req(){
               action.appendChild(edit_button);
               tr.appendChild(no);
               tr.appendChild(name);
+              tr.appendChild(lastName);
               tr.appendChild(email);
               tr.appendChild(phone);
               tr.appendChild(address);
@@ -210,7 +214,36 @@ function customer_req(){
 }
 function Cust_delete_record(){
     console.log("delete record");
+    xhttp = new XMLHttpRequest;
+    var Email = event.target.parentNode.previousSibling.previousSibling.previousSibling.textContent;
+    xhttp.open('POST','/delete_cust');
+    xhttp.send(JSON.stringify({email:Email}));
 }
-function Cust_edit_record(){
-    console.log("edit record");
+function Cust_edit_record(){ 
+    var target = event.target;
+    var name = target.parentNode.previousSibling.previousSibling.previousSibling.previousSibling.previousSibling.textContent;
+    var lastName = target.parentNode.previousSibling.previousSibling.previousSibling.previousSibling.textContent;
+    var email = target.parentNode.previousSibling.previousSibling.previousSibling.textContent;
+    var phone = target.parentNode.previousSibling.previousSibling.textContent;
+    var address = target.parentNode.previousSibling.textContent;
+    var data = {
+        name:name,
+        lastName:lastName,
+        email:email,
+        phone:phone,
+        address:address,
+    }
+    document.getElementById('update_name').value = name;
+    document.getElementById('update_lastname').value = lastName;
+    document.getElementById('update_email').value = email;
+    document.getElementById('update_address').value = address;
+    document.getElementById('update_phone').value = phone;
+    document.getElementById('edit_form').style.display = "block";
+     document.getElementById('send_button').addEventListener("click",function(){
+        document.getElementById('myform').submit();
+    })
+}
+function formclose(){
+    document.getElementById('edit_form').style.display = "none";
+    return false;
 }
