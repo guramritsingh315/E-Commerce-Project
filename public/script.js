@@ -95,7 +95,7 @@ function showPassword(){
     }
 }
 function merchant_req(){
-    document.getElementById("user_info").innerHTML = "Displaying: Merchant Record"
+    document.getElementById("user_info").innerHTML = "Displaying: Customer Record"
     var table = document.getElementById("table_data");
     table.innerHTML="";
     var xhttp = new XMLHttpRequest;
@@ -109,11 +109,13 @@ function merchant_req(){
               no.setAttribute("scope","row");
               var name = document.createElement('td');
               var email = document.createElement('td');
+              var lastName = document.createElement('td');
               var phone = document.createElement('td');
               var address = document.createElement('td');
               var action = document.createElement('td');
               var no_data = document.createTextNode(i);
-              var name_data = document.createTextNode(user.name+" "+user.lastName);
+              var lastName_data = document.createTextNode(user.lastName);
+              var name_data = document.createTextNode(user.name);
               var email_data = document.createTextNode(user.email);
               var phone_data = document.createTextNode(user.number);
               var address_data = document.createTextNode(user.address);
@@ -122,15 +124,16 @@ function merchant_req(){
               delete_button.setAttribute("class","btn btn-danger");
               delete_button.setAttribute("style","margin:3px 3px 3px 3px;");
               delete_button.setAttribute("value","Delete");
-              delete_button.setAttribute("onclick","mer_delete_record()");
+              delete_button.setAttribute("onclick","Mer_delete_record()");
               var edit_button = document.createElement('input');
               edit_button.setAttribute("type","button");
               edit_button.setAttribute("class","btn btn-warning");
               edit_button.setAttribute("value","Edit");
-              edit_button.setAttribute("onclick","mer_edit_record()");
+              edit_button.setAttribute("onclick","Mer_edit_record()");
               
               no.appendChild(no_data);
               name.appendChild(name_data);
+              lastName.appendChild(lastName_data);
               email.appendChild(email_data);
               phone.appendChild(phone_data);
               address.appendChild(address_data);
@@ -138,6 +141,7 @@ function merchant_req(){
               action.appendChild(edit_button);
               tr.appendChild(no);
               tr.appendChild(name);
+              tr.appendChild(lastName);
               tr.appendChild(email);
               tr.appendChild(phone);
               tr.appendChild(address);
