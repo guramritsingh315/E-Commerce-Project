@@ -169,6 +169,40 @@ app.post('/authenticate',function(req,res){
     
     
 });
+//handling signups
+app.post('/merchantSignup',function(req,res){
+    var data = {
+        userType:"merchant",
+        name:req.body.name,
+        lastName:req.body.lastName,
+        email:req.body.Email,
+        number:req.body.number,
+        company:req.body.company,
+        address:req.body.address,
+        password:req.body.password,
+    }
+    Merchant.findOne({email:req.body.Email})
+    .then(merchant=>{
+        if(!merchant){
+            bcrypt.hash(req.body.password,10,(err,hash)=>{
+                data.password = hash;
+                Merchant.create(data)
+                .then(customer=>{
+                    //res.json('registered: '+req.body.company);
+                    return res.redirect("/login.html");
+                })
+                .catch(err=>{
+                    res.send('err: '+err);
+                })
+            })
+        }else{
+            res.send({error:'merchant record already exists'});
+        }
+    })
+    .catch(err=>{
+        res.send('err: '+err);
+    })
+});
 app.post('/customerSignup',function(req,res){
     var data = {
         userType:"customer",
@@ -206,60 +240,69 @@ app.post("/logout",function(req,res){
     req.logOut();
      res.redirect("/login.html");
 })
-// can not send response or responsible is not visible at customer side
+//User editing and deletion
 app.post('/delete_cust',function(req,res){
     readJSONBody(req,function(cust){
         var query = {email:cust.email};
-        Customer.deleteOne(query,function(err,obj){
+        Customer.deleteOne(query,function(err){
             if(err) throw err;
-        }).then(cust=>{
-            res.send("Deletion Successfull");
-        }).catch(err=>{
-            res.send("Something went wrong!!");
+            res.json("deletion successfull");
         })     
     })
 });
-app.post('/updateCustomer',function(req,res){
-    console.log(req.body.firstname);
-    Customer.findOne({email:req.body.email},function(err,data){
-        if(err) throw err;
-        else{
-            //update customer data here
-
-            res.json("customer updation pending");
-        }
+app.post('/delete_merchant',function(req,res){
+    readJSONBody(req,function(cust){
+        var query = {email:cust.email};
+        Merchant.deleteOne(query,function(err){
+            if(err) throw err;
+            res.json("deletion successfull");
+        })     
     })
 })
-app.post('/merchantSignup',function(req,res){
-    var data = {
-        userType:"merchant",
-        name:req.body.name,
-        lastName:req.body.lastName,
-        email:req.body.Email,
-        number:req.body.number,
-        company:req.body.company,
-        address:req.body.address,
-        password:req.body.password,
-    }
-    Merchant.findOne({email:req.body.Email})
-    .then(merchant=>{
-        if(!merchant){
-            bcrypt.hash(req.body.password,10,(err,hash)=>{
-                data.password = hash;
-                Merchant.create(data)
-                .then(customer=>{
-                    //res.json('registered: '+req.body.company);
-                    return res.redirect("/login.html");
-                })
-                .catch(err=>{
-                    res.send('err: '+err);
-                })
-            })
-        }else{
-            res.send({error:'merchant record already exists'});
+app.post('/updateMerchant',function(req,res){
+    readJSONBody(req,function(user){
+        var query = {email:user.email};
+        var data = {
+            name:user.name,
+            lastName:user.lastName,
+            email:user.email,
+            number:user.phone,
+            address:user.address
         }
-    })
-    .catch(err=>{
-        res.send('err: '+err);
+        Merchant.findOne(query).then(duser=>{
+            Merchant.updateOne(duser,data,function(err){
+                if(err) throw err;
+                res.json("Updation Successfull");
+            })
+        })
+        .catch(err=>{
+            res.sendStatus(400);
+            console.log(err);
+        })
     })
 });
+app.post('/updateCustomer',function(req,res){
+    readJSONBody(req,function(user){
+        var query = {email:user.email};
+        var data = {
+            name:user.name,
+            lastName:user.lastName,
+            email:user.email,
+            number:user.phone,
+            address:user.address
+        }
+        Customer.findOne(query).then(duser=>{
+            Customer.updateOne(duser,data,function(err){
+                if(err) throw err;
+                res.json("Updation Successfull");
+            })
+        })
+        .catch(err=>{
+            res.sendStatus(400);
+            console.log(err);
+        })
+    })
+});
+
+
+
