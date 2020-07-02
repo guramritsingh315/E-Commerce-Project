@@ -12,8 +12,7 @@ var passport = require('passport');
 //importing schemas
 const Customer = require('./models/customer');
 const Merchant = require('./models/merchant');
-const { response } = require('express');
-const { allowedNodeEnvironmentFlags } = require('process');
+
 //connecting to data base
 mongoose.connect('mongodb://localhost/UserData', { useNewUrlParser: true,useUnifiedTopology:true });
 var db=mongoose.connection;
@@ -21,7 +20,7 @@ db.on('error',console.log.bind(console,"connection error"));
 db.once('open',function(callback){
     console.log("connection successful");
 });
-app.use(cors());
+
 process.env.SECRET_KEY = 'secret';
 app.use(express.static('public'));
 app.use(bodyParser.json());
@@ -32,6 +31,7 @@ app.use(bodyParser.urlencoded(
 app.use(cookieParser());
 app.set('views',path.join(__dirname,'views'));
 app.set('view engine','ejs');
+mongoose.set('useFindAndModify', false);
 app.listen(8080,function(error){
     if(error) throw error;
     else{
@@ -59,7 +59,7 @@ app.get('/signup',function(request,response){
     response.render('signup');
 });
 app.get('/admin',function(req,res){
-    res.render('admin');
+    res.sendFile(path.join(__dirname,'views','admin.html'));
 });
 app.get('/merchant_data',ensureToken,function(req,res){
     jwt.verify(req.cookies.token,process.env.SECRET_KEY,function(err,data){
@@ -110,8 +110,8 @@ app.post('/authenticate',function(req,res){
             name:"Administrator",
             email:"admin@ecommerce.com"
         }
-        let token = jwt.sign(admin_payload,process.env.SECRET_KEY,{expiresIn:24000});
-        res.cookie('token',token);
+        let token = jwt.sign(admin_payload,process.env.SECRET_KEY,{expiresIn:2*60*60});
+        res.cookie('token',token,{ maxAge: 2 * 60 * 60 * 1000, httpOnly: true });
         res.redirect("/admin");
     }
     else if(req.body.merchant==='merchant'){
@@ -125,7 +125,7 @@ app.post('/authenticate',function(req,res){
                         last_name:user.lastName,
                         email:user.email,
                     };
-                    let token = jwt.sign(payload,process.env.SECRET_KEY,{expiresIn:24000});
+                    let token = jwt.sign(payload,process.env.SECRET_KEY,{expiresIn:2*60*60});
                     res.cookie('token',token); 
                     res.redirect("/home");
                 }else{
@@ -151,7 +151,7 @@ app.post('/authenticate',function(req,res){
                         last_name:user.lastName,
                         email:user.email,
                     };
-                    let token = jwt.sign(Cust_payload,process.env.SECRET_KEY,{expiresIn:1440});
+                    let token = jwt.sign(Cust_payload,process.env.SECRET_KEY,{expiresIn:2*60*60});
                     res.cookie('token',token); 
                     res.redirect("/home");
                 }else{
@@ -241,25 +241,25 @@ app.post("/logout",function(req,res){
      res.redirect("/login.html");
 })
 //User editing and deletion
-app.post('/delete_cust',function(req,res){
+app.post('/delete_cust',ensureToken,function(req,res){
     readJSONBody(req,function(cust){
         var query = {email:cust.email};
         Customer.deleteOne(query,function(err){
-            if(err) throw err;
-            res.json("deletion successfull");
+            if(err) return res.send(500,'deletion failed');
+          return res.send(200,"deletion successfull");
         })     
     })
 });
-app.post('/delete_merchant',function(req,res){
+app.post('/delete_merchant',ensureToken,function(req,res){
     readJSONBody(req,function(cust){
         var query = {email:cust.email};
         Merchant.deleteOne(query,function(err){
-            if(err) throw err;
-            res.json("deletion successfull");
+            if(err) res.send(500,"deletion failed");
+            return res.send(200,"deletion successfull");
         })     
     })
 })
-app.post('/updateMerchant',function(req,res){
+app.post('/updateMerchant',ensureToken,function(req,res){
     readJSONBody(req,function(user){
         var query = {email:user.email};
         var data = {
@@ -268,19 +268,22 @@ app.post('/updateMerchant',function(req,res){
             email:user.email,
             number:user.phone,
             address:user.address
-        }
-        Merchant.findOne(query).then(duser=>{
-            Merchant.updateOne(duser,data,function(err){
-                if(err) throw err;
-                res.json("Updation Successfull");
+        };
+       Merchant.findOne(query)
+       .then(user=>{
+            Merchant.updateOne(query,data,{upsert:true},function(err,doc){
+                if(err) return res.send(500,{err:err});
+                res.status(200).send();
             })
-        })
-        .catch(err=>{
-            res.sendStatus(400);
-            console.log(err);
-        })
+       })//this block ending
+       .catch(err=>{
+           res.send({err:err});
+       })
     })
 });
+
+
+
 app.post('/updateCustomer',function(req,res){
     readJSONBody(req,function(user){
         var query = {email:user.email};
@@ -290,17 +293,17 @@ app.post('/updateCustomer',function(req,res){
             email:user.email,
             number:user.phone,
             address:user.address
-        }
-        Customer.findOne(query).then(duser=>{
-            Customer.updateOne(duser,data,function(err){
-                if(err) throw err;
-                res.json("Updation Successfull");
+        };
+       Customer.findOne(query)
+       .then(user=>{
+            Customer.updateOne(query,data,{upsert:true},function(err,doc){
+                if(err) return res.send(500,{err:err});
+                res.status(200).send();
             })
-        })
-        .catch(err=>{
-            res.sendStatus(400);
-            console.log(err);
-        })
+       })//this block ending
+       .catch(err=>{
+           res.send({err:err});
+       })//catch ending
     })
 });
 

@@ -156,7 +156,6 @@ function Mer_delete_record(){
 }
 
 function Mer_edit_record(){
-    xhttp = new XMLHttpRequest;
     var target = event.target;
     var name = target.parentNode.previousSibling.previousSibling.previousSibling.previousSibling.previousSibling.textContent;
     var lastName = target.parentNode.previousSibling.previousSibling.previousSibling.previousSibling.textContent;
@@ -169,8 +168,14 @@ function Mer_edit_record(){
     document.getElementById('update_address').value = address;
     document.getElementById('update_phone').value = phone;
     document.getElementById('edit_form').style.display = "block";
-     document.getElementById('send_button').addEventListener("click",function(){
-
+    document.getElementById('send_button').addEventListener("click",function(){
+    xhttp = new XMLHttpRequest;
+    xhttp.onreadystatechange = function(){
+        if (this.readyState == 4 && this.status == 200) {
+        formclose();
+        merchant_req();   
+        } 
+    }
     var newname = document.getElementById('update_name').value;
     var newlastName = document.getElementById('update_lastname').value;
     var newEmail = document.getElementById('update_email').value
@@ -181,9 +186,7 @@ function Mer_edit_record(){
             lastName:newlastName,
             email:newEmail,
             phone:newPhone,
-            address:newAddress,}));
-        formclose();
-        merchant_req();       
+            address:newAddress,}));      
     })
 }
 
@@ -256,7 +259,6 @@ function Cust_delete_record(){
     customer_req();
 }
 function Cust_edit_record(){ 
-    xhttp = new XMLHttpRequest;
     var target = event.target;
     var name = target.parentNode.previousSibling.previousSibling.previousSibling.previousSibling.previousSibling.textContent;
     var lastName = target.parentNode.previousSibling.previousSibling.previousSibling.previousSibling.textContent;
@@ -277,7 +279,13 @@ function Cust_edit_record(){
     document.getElementById('update_phone').value = phone;
     document.getElementById('edit_form').style.display = "block";
      document.getElementById('send_button').addEventListener("click",function(){
-
+        xhttp = new XMLHttpRequest;
+        xhttp.onreadystatechange = function(){
+            if (this.readyState == 4 && this.status == 200) {
+            formclose();
+            customer_req();       
+            } 
+        }
     var newname = document.getElementById('update_name').value;
     var newlastName = document.getElementById('update_lastname').value;
     var newEmail = document.getElementById('update_email').value
@@ -289,8 +297,6 @@ function Cust_edit_record(){
             email:newEmail,
             phone:newPhone,
             address:newAddress,}));
-        formclose();
-        customer_req();       
     })
 }
 function formclose(){
