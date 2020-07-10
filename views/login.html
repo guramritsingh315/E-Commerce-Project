@@ -1,50 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Login</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-  <link rel="stylesheet" href="style.css">
-    <title>Document</title>
-</head>
-<body class="login">  
-    <nav class="navbar navbar-inverse">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="#">E-commerce</a>
-            </div>
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="signup">already a user? &ensp;<span class="glyphicon glyphicon-log-in"></span> signup</a></li>
-            </ul>
-        </div>
-    </nav>
-    <img src="login.png" class="login_background"/>
-    <div class="container">
-            <div class="login_box">
-            <form class="form-horizontal" action="/login" method="POST">
-                <h2 id="login_head">Welcome</h2>
-                <div class="form-group">
-                    <div class="col-sm-10">
-                        <input type="text" placeholder="Enter your Email" id="login_email" name="login_email" required/>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-sm-10">
-                        <input type="password" placeholder="Enter password" name="password" id="login_password" required/>
-                    </div>
-                </div>
-                <input type="checkbox" onclick="showPassword()" class="passCheck"/> Show Password<br/>
-                <span>Are you a merchant?&ensp; </span><input type="checkbox" value="merchant" name="merchant" /><br/>
-                <center>
-                    <input type="submit" value="login" id="login"> 
-                </center>
-            </form>
-          </div>
-    </div>
+<html>
 
-    <script src="script.js"></script>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div>
+        <nav class="navbar navbar-light navbar-expand-md sticky-top navigation-clean-button" style="height:80px;background-color:#37434d;color:#ffffff;">
+            <div class="container-fluid"><a class="navbar-brand" href="#"><i class="fa fa-globe"></i>&nbsp;Guramrit's E-Commerce</a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+                <div
+                    class="collapse navbar-collapse" id="navcol-1">
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item" role="presentation"><a class="nav-link" data-bs-hover-animate="bounce" style="color:#ffffff;" href="signup"><i class="fa fa-sign-in"></i>&nbsp;Sign-up</a></li>
+                    </ul>
+            </div>
+    </div>
+    </nav>
+    </div>
+    <div class="login-clean">
+        <form class="pulse animated" method="POST" action="/authenticate">
+            <h2 class="sr-only">Login Form</h2>
+            <div class="text-primary illustration"><i class="icon ion-ios-navigate"></i></div>
+            <div class="form-group"><input class="border-dark shadow-sm form-control" type="email" name="login_email" id="login_email" placeholder="Email" required="" autofocus="" autocomplete="on" inputmode="email"></div>
+            <div class="form-group"><input class="border-dark shadow-sm form-control" type="password" name="login_password" placeholder="Password" id="login_password" autocomplete="off"></div>
+            <div class="form-group"><span>Are you a merchant?&ensp; </span><input type="checkbox" value="merchant" name="merchant" /></div>
+            <div class="form-group"><button class="btn btn-primary btn-block" type="submit" id="login">Log In</button></div>
+            
+        </form>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <script src="bs-init.js"></script>
 </body>
+
 </html>

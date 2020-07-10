@@ -64,3 +64,22 @@
       background-repeat: no-repeat;
       background-position: fixed;
   }
+  .welcome-label{
+      color:crimson;
+      cursor: default;
+      font-size: medium;
+  }
+  .logout{
+      padding:5px;
+  }
+  .cross{
+      float:right;
+      text-decoration: none;
+      font-weight: 400;
+      font-size: 20px;
+      cursor: pointer;
+  }
+  .cross:hover{
+      text-decoration: none;
+  }
+  

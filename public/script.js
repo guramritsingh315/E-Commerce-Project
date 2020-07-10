@@ -1,3 +1,5 @@
+//const { Document } = require("mongoose");
+
 function Cust_validateAndSend(){
    var request = new XMLHttpRequest();
     var Cust_name = document.getElementById('Cust-name').value.trim();
@@ -84,12 +86,219 @@ function merc_validateAndSend(){
     }
     return true;
 }
-function showPassword(){
-    var x = document.getElementById("login_password");
-    if (x.type === "password") {
-      x.type = "text";
-    } else {
-      x.type = "password";
+function merchant_req(){
+    document.getElementById("user_info").innerHTML = "Displaying: Merchant Record"
+    var table = document.getElementById("table_data");
+    var xhttp = new XMLHttpRequest;
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            table.innerHTML="";
+          data = JSON.parse(this.responseText);
+          var i=1;
+          data.forEach(function(user){
+              var tr = document.createElement('tr');
+              var no = document.createElement('th');
+              no.setAttribute("scope","row");
+              var name = document.createElement('td');
+              var email = document.createElement('td');
+              var lastName = document.createElement('td');
+              var phone = document.createElement('td');
+              var address = document.createElement('td');
+              var action = document.createElement('td');
+              var no_data = document.createTextNode(i);
+              var lastName_data = document.createTextNode(user.lastName);
+              var name_data = document.createTextNode(user.name);
+              var email_data = document.createTextNode(user.email);
+              var phone_data = document.createTextNode(user.number);
+              var address_data = document.createTextNode(user.address);
+              var delete_button = document.createElement('input');
+              delete_button.setAttribute("type","button");
+              delete_button.setAttribute("class","btn btn-danger");
+              delete_button.setAttribute("style","margin:3px 3px 3px 3px;");
+              delete_button.setAttribute("value","Delete");
+              delete_button.setAttribute("onclick","Mer_delete_record()");
+              var edit_button = document.createElement('input');
+              edit_button.setAttribute("type","button");
+              edit_button.setAttribute("class","btn btn-warning");
+              edit_button.setAttribute("value","Edit");
+              edit_button.setAttribute("onclick","Mer_edit_record()");
+              
+              no.appendChild(no_data);
+              name.appendChild(name_data);
+              lastName.appendChild(lastName_data);
+              email.appendChild(email_data);
+              phone.appendChild(phone_data);
+              address.appendChild(address_data);
+              action.appendChild(delete_button);
+              action.appendChild(edit_button);
+              tr.appendChild(no);
+              tr.appendChild(name);
+              tr.appendChild(lastName);
+              tr.appendChild(email);
+              tr.appendChild(phone);
+              tr.appendChild(address);
+              tr.appendChild(action);
+              table.appendChild(tr);
+              i++;
+          })
+        }
     }
+      
+    xhttp.open('GET','/merchant_data');
+    xhttp.send();
+}
+function Mer_delete_record(){
+    xhttp = new XMLHttpRequest;
+    var Email = event.target.parentNode.previousSibling.previousSibling.previousSibling.textContent;
+    xhttp.open('POST','/delete_merchant');
+    xhttp.send(JSON.stringify({email:Email}));
+    merchant_req();
 }
 
+function Mer_edit_record(){
+    var target = event.target;
+    var name = target.parentNode.previousSibling.previousSibling.previousSibling.previousSibling.previousSibling.textContent;
+    var lastName = target.parentNode.previousSibling.previousSibling.previousSibling.previousSibling.textContent;
+    var email = target.parentNode.previousSibling.previousSibling.previousSibling.textContent;
+    var phone = target.parentNode.previousSibling.previousSibling.textContent;
+    var address = target.parentNode.previousSibling.textContent;
+    document.getElementById('update_name').value = name;
+    document.getElementById('update_lastname').value = lastName;
+    document.getElementById('update_email').value = email;
+    document.getElementById('update_address').value = address;
+    document.getElementById('update_phone').value = phone;
+    document.getElementById('edit_form').style.display = "block";
+    document.getElementById('send_button').addEventListener("click",function(){
+    xhttp = new XMLHttpRequest;
+    xhttp.onreadystatechange = function(){
+        if (this.readyState == 4 && this.status == 200) {
+        formclose();
+        merchant_req();   
+        } 
+    }
+    var newname = document.getElementById('update_name').value;
+    var newlastName = document.getElementById('update_lastname').value;
+    var newEmail = document.getElementById('update_email').value
+    var newPhone = document.getElementById('update_phone').value;
+    var newAddress = document.getElementById('update_address').value;
+        xhttp.open('POST','/updateMerchant');
+        xhttp.send(JSON.stringify({name:newname,
+            lastName:newlastName,
+            email:newEmail,
+            phone:newPhone,
+            address:newAddress,}));      
+    })
+}
+
+
+function customer_req(){
+    document.getElementById("user_info").innerHTML = "Displaying: Customer Record"
+    var table = document.getElementById("table_data");
+    var xhttp = new XMLHttpRequest;
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            table.innerHTML="";
+          data = JSON.parse(this.responseText);
+          var i=1;
+          data.forEach(function(user){
+              var tr = document.createElement('tr');
+              var no = document.createElement('th');
+              no.setAttribute("scope","row");
+              var name = document.createElement('td');
+              var email = document.createElement('td');
+              var lastName = document.createElement('td');
+              var phone = document.createElement('td');
+              var address = document.createElement('td');
+              var action = document.createElement('td');
+              var no_data = document.createTextNode(i);
+              var lastName_data = document.createTextNode(user.lastName);
+              var name_data = document.createTextNode(user.name);
+              var email_data = document.createTextNode(user.email);
+              var phone_data = document.createTextNode(user.number);
+              var address_data = document.createTextNode(user.address);
+              var delete_button = document.createElement('input');
+              delete_button.setAttribute("type","button");
+              delete_button.setAttribute("class","btn btn-danger");
+              delete_button.setAttribute("style","margin:3px 3px 3px 3px;");
+              delete_button.setAttribute("value","Delete");
+              delete_button.setAttribute("onclick","Cust_delete_record()");
+              var edit_button = document.createElement('input');
+              edit_button.setAttribute("type","button");
+              edit_button.setAttribute("class","btn btn-warning");
+              edit_button.setAttribute("value","Edit");
+              edit_button.setAttribute("onclick","Cust_edit_record()");
+              
+              no.appendChild(no_data);
+              name.appendChild(name_data);
+              lastName.appendChild(lastName_data);
+              email.appendChild(email_data);
+              phone.appendChild(phone_data);
+              address.appendChild(address_data);
+              action.appendChild(delete_button);
+              action.appendChild(edit_button);
+              tr.appendChild(no);
+              tr.appendChild(name);
+              tr.appendChild(lastName);
+              tr.appendChild(email);
+              tr.appendChild(phone);
+              tr.appendChild(address);
+              tr.appendChild(action);
+              table.appendChild(tr);
+              i++;
+          })
+        }
+    }
+    xhttp.open('GET','/customer_data');
+    xhttp.send();
+}
+function Cust_delete_record(){
+    xhttp = new XMLHttpRequest;
+    var Email = event.target.parentNode.previousSibling.previousSibling.previousSibling.textContent;
+    xhttp.open('POST','/delete_cust');
+    xhttp.send(JSON.stringify({email:Email}));
+    customer_req();
+}
+function Cust_edit_record(){ 
+    var target = event.target;
+    var name = target.parentNode.previousSibling.previousSibling.previousSibling.previousSibling.previousSibling.textContent;
+    var lastName = target.parentNode.previousSibling.previousSibling.previousSibling.previousSibling.textContent;
+    var email = target.parentNode.previousSibling.previousSibling.previousSibling.textContent;
+    var phone = target.parentNode.previousSibling.previousSibling.textContent;
+    var address = target.parentNode.previousSibling.textContent;
+    var data = {
+        name:name,
+        lastName:lastName,
+        email:email,
+        phone:phone,
+        address:address,
+    }
+    document.getElementById('update_name').value = name;
+    document.getElementById('update_lastname').value = lastName;
+    document.getElementById('update_email').value = email;
+    document.getElementById('update_address').value = address;
+    document.getElementById('update_phone').value = phone;
+    document.getElementById('edit_form').style.display = "block";
+     document.getElementById('send_button').addEventListener("click",function(){
+        xhttp = new XMLHttpRequest;
+        xhttp.onreadystatechange = function(){
+            if (this.readyState == 4 && this.status == 200) {
+            formclose();
+            customer_req();       
+            } 
+        }
+    var newname = document.getElementById('update_name').value;
+    var newlastName = document.getElementById('update_lastname').value;
+    var newEmail = document.getElementById('update_email').value
+    var newPhone = document.getElementById('update_phone').value;
+    var newAddress = document.getElementById('update_address').value;
+        xhttp.open('POST','/updateCustomer');
+        xhttp.send(JSON.stringify({name:newname,
+            lastName:newlastName,
+            email:newEmail,
+            phone:newPhone,
+            address:newAddress,}));
+    })
+}
+function formclose(){
+    document.getElementById('edit_form').style.display = "none";
+}
