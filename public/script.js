@@ -300,5 +300,8 @@ function Cust_edit_record(){
     })
 }
 function formclose(){
-    document.getElementById('edit_form').style.display = "none";
+    document.getElementById('popup_form').style.display = "none";
+}
+function addProduct(){
+    document.getElementById('popup_form').style.display = "block";
 }

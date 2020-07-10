@@ -27,10 +27,46 @@
     </nav>
     </div>
 <div class="container">
+    <div class="navbar">
+            <input type="button" value="Generate a product request" class="btn btn-primary" onclick="addProduct()"  />
+    </div>
+    <!--Product form -->
+    <div class="Product-form" id="popup_form">
+        <div class="container profile profile-view" id="profile">
+        <form class="form" action="">
+            <div class="form-row profile-row">
+                <div class="col-md-12">
+                    <h1>Add Product</h1>
+                    <hr>
+                    <div class="form-row">
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-group"><label>Product Name: </label><input class="form-control" type="text" name="productName" /></div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-sm-3">
+                            <div class="form-group"><label>Price: </label><input class="form-control" type="number" name="productPrice" /></div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-sm-7">
+                            <div class="form-group"><label>Image of product:&ensp; </label><input type="file" name="productImage" /></div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-12 content-right"><button class="btn btn-primary form-btn" type="button" >SAVE </button>
+                            <button class="btn btn-danger form-btn" type="button" onclick="formclose()">CANCEL</button></div>
+                    </div>
+
+
+
+                </div>
+            </div>
+        </form>
+    </div>
+    </div>
     
 </div>
-
 <script src="script.js"></script>
-
 </body>
 </html>

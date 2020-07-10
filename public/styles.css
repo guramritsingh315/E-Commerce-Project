@@ -245,7 +245,16 @@
     opacity: 1;
     text-decoration: none;
   }
-
+.Product-form{
+  width:50%;
+  height:auto;
+  position:absolute;
+  left:50%;
+  top:60%;
+  transform: translate(-50%,-50%);
+  display:none;
+  background-color: #f1f2f3f4;
+}
 .edit_form{
   width:500px;
   height:600px;
@@ -306,7 +315,7 @@ hr {
   margin: 0 5px;
   max-width: 200px;
 }
-
+.
 
 
 
