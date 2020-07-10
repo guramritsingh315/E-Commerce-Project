@@ -52,6 +52,15 @@ app.get('/home',ensureToken,function(request,response){
         }
     })
 });
+app.get('/merchantHome',ensureToken,function(request,response){
+    jwt.verify(request.cookies.token,process.env.SECRET_KEY,function(err,data){
+        if(err) throw err;
+        else{
+            user = data;
+            response.render('merchantHome',{name:user.name});
+        }
+    })
+})
 app.get('/login.html',function(request,response){
     response.sendFile(path.join(__dirname,'views','login.html'));
 });
@@ -82,6 +91,16 @@ app.get('/customer_data',ensureToken,function(req,res){
             })
         }
     }) 
+})
+app.get('/productRequests',ensureToken,function(req,res){
+    jwt.verify(req.cookies.token,process.env.SECRET_KEY,function(err,data){
+        if(err){
+            res.send("Something went wrong!!");
+        } 
+        else{
+            res.send("Product request initiate");
+        }
+    })
 })
 
 function ensureToken(req, res, next) {
@@ -127,7 +146,7 @@ app.post('/authenticate',function(req,res){
                     };
                     let token = jwt.sign(payload,process.env.SECRET_KEY,{expiresIn:2*60*60});
                     res.cookie('token',token); 
-                    res.redirect("/home");
+                    res.redirect("/merchantHome");
                 }else{
                     //passwords do not match
                     res.json({error:'Passwords do not match!!'});
@@ -271,7 +290,7 @@ app.post('/updateMerchant',ensureToken,function(req,res){
         };
        Merchant.findOne(query)
        .then(user=>{
-            Merchant.updateOne(query,data,{upsert:true},function(err,doc){
+            Merchant.updateOne(query,data,{upsert:false},function(err,doc){
                 if(err) return res.send(500,{err:err});
                 res.status(200).send();
             })
@@ -296,7 +315,7 @@ app.post('/updateCustomer',function(req,res){
         };
        Customer.findOne(query)
        .then(user=>{
-            Customer.updateOne(query,data,{upsert:true},function(err,doc){
+            Customer.updateOne(query,data,{upsert:false},function(err,doc){
                 if(err) return res.send(500,{err:err});
                 res.status(200).send();
             })
