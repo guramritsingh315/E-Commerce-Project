@@ -12,6 +12,8 @@ var passport = require('passport');
 //importing schemas
 const Customer = require('./models/customer');
 const Merchant = require('./models/merchant');
+const Product = require('./models/product');
+const product = require('./models/product');
 
 //connecting to data base
 mongoose.connect('mongodb://localhost/UserData', { useNewUrlParser: true,useUnifiedTopology:true });
@@ -326,5 +328,17 @@ app.post('/updateCustomer',function(req,res){
     })
 });
 
+app.post('/addProduct',ensureToken,function(req,res){
+jwt.verify(req.cookies.token,process.env.SECRET_KEY,function(err,data){
+        var productSpec = {
+            name:req.body.productName,
+            price: req.body.productPrice,
+            quantity: req.body.productQuantity,
+            owner:data.email   
+        }
+        Product.create(productSpec);
+        res.status(200).send("Product Created");
 
+    })
+})
 
