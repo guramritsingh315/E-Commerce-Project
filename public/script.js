@@ -304,4 +304,7 @@ function formclose(){
 }
 function addProduct(){
     document.getElementById('popup_form').style.display = "block";
+    document.getElementById('productName').value=""
+    document.getElementById('productPrice').value = "";
+    document.getElementById('productQuantity').value = "";
 }
